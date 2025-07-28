@@ -13,6 +13,11 @@
       box-sizing: border-box;
       background: url('resources/guruimage.jpg') no-repeat center center fixed;
       background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      /* fallback color */
+      background-color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -20,13 +25,14 @@
       font-family: 'Segoe UI', Arial, sans-serif;
     }
     .container {
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0); /* fully transparent */
       border-radius: 16px;
       padding: 2rem 3rem;
       box-shadow: 0 4px 32px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
+      border: none;
     }
     h1 {
       margin-bottom: 2rem;
@@ -62,6 +68,12 @@
       text-align: center;
     }
     @media (max-width: 600px) {
+      body {
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
       .container {
         padding: 1rem 0.5rem;
       }
@@ -86,15 +98,18 @@
     <div id="status"></div>
   </div>
   <!-- Dummy ping sound -->
-  <audio id="pingSound" src="resources/ping.mp3" preload="auto"></audio> <!-- Add ping.mp3 to resources folder -->
+  <audio id="pingSound" src="resources/ping-82822.mp3" preload="auto"></audio> <!-- Add ping.mp3 to resources folder -->
   <!-- Meditation audio (replace with your own file in resources) -->
   <audio id="meditationAudio" src="resources/deep-aum-om-meditation-chanting-aum-21-times-sadhguru_WXHtVcIG.mp3" preload="auto"></audio>
+  <!-- Mantra audio to play after session completion -->
+  <audio id="mantraAudio" src="resources/kaalo-na-jaanaati-.mp3" preload="auto"></audio>
   <script>
     const startBtn = document.getElementById('startBtn');
     const timerEl = document.getElementById('timer');
     const statusEl = document.getElementById('status');
     const pingSound = document.getElementById('pingSound');
     const meditationAudio = document.getElementById('meditationAudio');
+    const mantraAudio = document.getElementById('mantraAudio');
 
     let interval = null;
     let startTime = null;
@@ -137,7 +152,7 @@
       if (programState !== 0) return;
       programState = 1;
       startBtn.disabled = true;
-      statusEl.textContent = 'Meditation started. Breathe and relax...';
+      statusEl.textContent = 'Sukha kriya...';
       let elapsed = 0;
       timerEl.textContent = formatTime(TOTAL_DURATION);
       playPing(); // Initial ping
@@ -157,13 +172,13 @@
         // At 6:00, start audio
         if (!audioStarted && elapsed >= AUDIO_START) {
           meditationAudio.play();
-          statusEl.textContent = 'Meditation audio playing...';
+          statusEl.textContent = 'Aum Chanting.';
           audioStarted = true;
         }
         // At 12:12, stop audio, start silence
         if (audioStarted && !audioEnded && elapsed >= AUDIO_START + AUDIO_DURATION) {
           meditationAudio.pause();
-          statusEl.textContent = 'Silent period. Remain still.';
+          statusEl.textContent = 'Viparit Swasana - continue in silence.';
           audioEnded = true;
         }
         // At 16:12, ping again
@@ -183,6 +198,9 @@
             wakeLock.release();
             wakeLock = null;
           }
+          // Play mantra audio after session completion
+          mantraAudio.currentTime = 0;
+          mantraAudio.play();
         }
       }, 500);
     }
