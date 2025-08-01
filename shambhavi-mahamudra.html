@@ -171,9 +171,13 @@
 
         // At 6:00, start audio
         if (!audioStarted && elapsed >= AUDIO_START) {
-          meditationAudio.play();
-          statusEl.textContent = 'Aum Chanting.';
-          audioStarted = true;
+          playPing(); // Play ping before meditation audio
+          // Wait 2 seconds before playing meditation audio
+          setTimeout(() => {
+            meditationAudio.play();
+            statusEl.textContent = 'Aum Chanting.';
+            audioStarted = true;
+          }, 3000);
         }
         // At 12:12, stop audio, start silence
         if (audioStarted && !audioEnded && elapsed >= AUDIO_START + AUDIO_DURATION) {
