@@ -172,12 +172,12 @@
         // At 6:00, start audio
         if (!audioStarted && elapsed >= AUDIO_START) {
           playPing(); // Play ping before meditation audio
-          // Wait 2 seconds before playing meditation audio
+          audioStarted = true; // Move this here to prevent multiple triggers
+          // Wait 10 seconds before playing meditation audio
           setTimeout(() => {
             meditationAudio.play();
             statusEl.textContent = 'Aum Chanting.';
-            audioStarted = true;
-          }, 3000);
+          }, 10000);
         }
         // At 12:12, stop audio, start silence
         if (audioStarted && !audioEnded && elapsed >= AUDIO_START + AUDIO_DURATION) {
@@ -212,4 +212,4 @@
     startBtn.addEventListener('click', startProgram);
   </script>
 </body>
-</html> 
+</html>
